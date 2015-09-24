@@ -43,9 +43,6 @@
     "dependencies": {
 	"es6-polyfills": "https://github.com/NatLibFi/es6-polyfills"
     },
-    "peerDependencies": {
-	"record-loader": "https://github.com/NatLibFi/record-loader"
-    },
     "devDependencies": {
 	"chai": "^3.2.0",
 	"chai-as-promised": "^5.1.0",
