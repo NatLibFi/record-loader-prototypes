@@ -1,6 +1,6 @@
 {
     "name": "record-loader-prototypes",
-    "description": "Base prototypes of processors, record store and record set for recordLoader",
+    "description": "Base prototypes of processors, converters, record store and record set for recordLoader",
     "author": {
 	"name": "The National Library of Finland"
     },
