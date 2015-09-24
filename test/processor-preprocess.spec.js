@@ -56,6 +56,12 @@ function factory(chai, chaiAsPromised, preprocess)
 	it('Should run and return a preprocessed record', function() {
 	    return preprocess().run().should.be.rejectedWith(/^Not implemented/);
 	});
+
+	it('Should set converter succesfully', function() {
+	    (function(){
+		preprocess().setConverter();
+	    }).should.throw(/^Not implemented/);
+	});
     
     });
 

@@ -26,38 +26,35 @@
  *
  **/
 
-/* istanbul ignore next: umd wrapper */
 (function (root, factory) {
 
     'use strict';
 
     if (typeof define === 'function' && define.amd) {
-        define(['es6-polyfills/lib/promise'], factory);
+	define(['chai', '../lib/converters/prototype'], factory);
     } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('es6-polyfills/lib/promise'));
+        module.exports = factory(require('chai'), require('../lib/converters/prototype'));
     }
 
 }(this, factory));
 
-function factory(Promise) {
+function factory(chai, converter)
+{
 
     'use strict';
 
-    return function(parameters) {
-	return {
-	    run: function(record)
-	    {
-		return Promise.reject('Not implemented');
-	    },
-	    setRecordStore: function(record_store)
-	    {
-		throw new Error('Not implemented');
-	    },
-	    setConverter: function(converter)
-	    {
-		throw new Error('Not implemented');
-	    }
-	};
-    };
+    var expect = chai.expect;
+
+    describe('converter', function() {
+
+	it('Should convert record to a native format', function() {
+	    expect(converter().convert).to.throw(/^Not implemented/);
+	});
+
+	it('Should fail to convert unsupported record type to native format', function() {
+	    expect(converter().convert).to.throw(/^Not implemented/);
+	});
+    
+    });
 
 }

@@ -56,6 +56,12 @@ function factory(chai, chaiAsPromised, filter)
 	it('Should run and return undefined as the record is filtered out', function() {
 	    return filter().run().should.be.rejectedWith(/^Not implemented/);
 	});
+
+	it('Should set converter succesfully', function() {
+	    (function(){
+		filter().setConverter();
+	    }).should.throw(/^Not implemented/);
+	});
     
     });
 

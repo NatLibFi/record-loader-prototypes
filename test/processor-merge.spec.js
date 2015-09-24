@@ -56,7 +56,13 @@ function factory(chai, chaiAsPromised, merge)
 	it('Should run and return a merged record', function() {
 	    return merge().run().should.be.rejectedWith(/^Not implemented/);
 	});
-    
+ 
+	it('Should set converter succesfully', function() {
+	    (function(){
+		merge().setConverter();
+	    }).should.throw(/^Not implemented/);
+	});
+   
     });
 
 }

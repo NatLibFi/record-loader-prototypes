@@ -44,14 +44,15 @@ function factory(chai, chaiAsPromised, match)
     'use strict';
 
     var should = chai.should();
-    var expect = chai.expect;
     
     chai.use(chaiAsPromised);
 
     describe('processor-match', function() {
 
 	it('Should set the record store successfully', function() {
-	    expect(match().setRecordStore).to.throw(/^Not implemented/);
+	    (function() {
+		match().setRecordStore();
+	    }).should.throw(/^Not implemented/);
 	});
 
 	it('Should run and return the input', function() {
@@ -60,6 +61,12 @@ function factory(chai, chaiAsPromised, match)
 
 	it('Should run and return the input record and matched records', function() {
 	    return match().run().should.be.rejectedWith(/^Not implemented/);
+	});
+
+	it('Should set converter succesfully', function() {
+	    (function(){
+		match().setConverter();
+	    }).should.throw(/^Not implemented/);
 	});
     
     });

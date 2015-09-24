@@ -43,7 +43,6 @@ function factory(chai, chaiAsPromised, load)
 
     'use strict';
 
-    var expect = chai.expect;
     var should = chai.should();
     
     chai.use(chaiAsPromised);
@@ -51,7 +50,9 @@ function factory(chai, chaiAsPromised, load)
     describe('processor-load', function() {
 
 	it('Should set the record store successfully', function() {
-	    expect(load().setRecordStore).to.throw(/^Not implemented/);
+	    (function() {
+		load().setRecordStore();
+	    }).should.throw(/^Not implemented/);
 	});
 
 	it('Should run and return expected load result', function() {
@@ -61,7 +62,13 @@ function factory(chai, chaiAsPromised, load)
 	it('Should run and reject because of invalid load options', function() {
 	    return load().run().should.be.rejectedWith(/^Not implemented/);
 	});
-    
+ 
+	it('Should set converter succesfully', function() {
+	    (function(){
+		load().setConverter();
+	    }).should.throw(/^Not implemented/);
+	});
+   
     });
 
 }
