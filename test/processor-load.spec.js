@@ -69,6 +69,11 @@ function factory(chai, chaiAsPromised, load)
 	    }).should.throw(/^Not implemented/);
 	});
    
+	it('Should resolve with record data in results, because of results level', function() {
+	    (function() {
+		load().setResultsLevel();
+	    }).should.throw(/^Not implemented/);
+	});
     });
 
 }

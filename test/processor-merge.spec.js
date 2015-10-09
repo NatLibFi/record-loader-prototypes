@@ -49,20 +49,25 @@ function factory(chai, chaiAsPromised, merge)
 
     describe('processor-merge', function() {
 
-	it('Should run and return the record as there is nothing to merge', function() {
+	it('Should resolve with the input record and empty array as there is nothing to merge', function() {
 	    return merge().run().should.be.rejectedWith(/^Not implemented/);
 	});
 
-	it('Should run and return a merged record', function() {
+	it('Should resolve with the merged record and an array of metadata about the merged records', function() {
 	    return merge().run().should.be.rejectedWith(/^Not implemented/);
 	});
- 
-	it('Should set converter succesfully', function() {
+
+	it('Should convert the input record and resolve with the merged record and array of metadata about the merged records', function() {
 	    (function(){
 		merge().setConverter();
 	    }).should.throw(/^Not implemented/);
 	});
-   
+
+	it('Should resolve with the merged record and an array of merged records, because of results level', function() {
+	    (function() {
+		merge().setResultsLevel();
+	    }).should.throw(/^Not implemented/);
+	});
     });
 
 }
