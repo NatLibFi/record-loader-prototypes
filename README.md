@@ -1,6 +1,6 @@
 # recordLoader base prototypes
 
-Base prototypes of processors, record store and record set for [recordLoader](https://github.com/NatLibFi/record-loader).
+Base prototypes of processors, converters, record store and record set for [recordLoader](https://github.com/NatLibFi/record-loader).
 
 ## Processing steps
 
