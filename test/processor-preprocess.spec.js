@@ -22,7 +22,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @licend  The above is the entire license notice
- * for the JavaScript code in this page.
+ * for the JavaScript code in this file.
  *
  **/
 
