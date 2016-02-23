@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,88 +28,91 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/hooks/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/hooks/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/hooks/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/hooks/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, hook)
+function factory(chai, chaiAsPromised, hookFactory)
 {
 
-    'use strict';
+  'use strict';
+  
+  var expect = chai.expect;
+  var should = chai.should();
+  
+  chai.use(chaiAsPromised);
 
-    var expect = chai.expect;
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  describe('hook', function() {
 
-    describe('hook', function() {
+    describe('factory', function() {
 
-	describe('factory', function() {
+      it('Should be be a function', function() {
+        expect(hookFactory).to.be.a('function');
+      });
 
-	    it('Should be be a function', function() {
-		expect(hook).to.be.a('function');
-	    });
+      it('Should create a proper object', function() {
+        expect(hookFactory()).to.be.an('object').and.to
+          .respondTo('setRecordStore').and.to
+          .respondTo('setRecordSet').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('setResults').and.to
+          .respondTo('run');
+      });
 
-	    it('Should create a proper hook object', function() {
+      describe('object', function() {
 
-		var obj = hook();
+        it('Should set a record store succesfully', function() {
+          expect(function() {
+            hookFactory().setRecordStore({});
+          }).to.not.throw();
+        });
 
-		expect(obj).to.be.an('object');
+        it('Should set a record set succesfully', function() {
+          expect(function() {
+            hookFactory().setRecordSet({});
+          }).to.not.throw();
+        });
 
-		expect(obj).to.have.all.keys([
-		    'setRecordStore',
-		    'setRecordSet',
-		    'setConverter',
-		    'run'
-		]);
+        it('Should set a converter succesfully', function() {
+          expect(function() {
+            hookFactory().setConverter({});
+          }).to.not.throw();
+        });
 
-		expect(obj.setRecordStore).to.be.a('function');
-		expect(obj.setRecordSet).to.be.a('function');
-		expect(obj.setConverter).to.be.a('function');
-		expect(obj.run).to.be.a('function');
+        it('Should set results succesfully', function() {
+          expect(function() {
+            hookFactory().setResults({});
+          }).to.not.throw();
+        });
 
-	    });
+        it('Should set a logger succesfully', function() {
+          expect(function() {
+            hookFactory().setLogger({});
+          }).to.not.throw();
+        });
+        
+        describe('#run', function() {
 
-	    describe('#setRecordStore', function() {
+          it('Should resolve', function() {
+            return expect(hookFactory().run()).to.eventually.become.undefined;
+          });
+          it('Should reject if there are any errors', function() {
+            return expect(hookFactory().run()).to.eventually.become.undefined;
+          });
 
-		it('Should not throw', function() {
-		    expect(hook().setRecordStore).to.not.throw();
-		});
+        });
 
-	    });
-
-	    describe('#setRecordSet', function() {
-
-		it('Should not throw', function() {
-		    expect(hook().setRecordSet).to.not.throw();
-		});
-
-	    });
-
-	    describe('#setConverter', function() {
-
-		it('Should not throw', function() {
-		    expect(hook().setConverter).to.not.throw();
-		});
-
-	    });
-
-	    describe('#run', function() {
-
-		it('Should resolve', function() {
-		    hook().run().should.eventually.eql();
-		});
-
-	    });
-
-	});
+      });
 
     });
+
+  });
 
 }

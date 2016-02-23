@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,41 +28,70 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/processors/filter/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/filter/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/processors/filter/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/filter/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, filter)
+function factory(chai, chaiAsPromised, filterFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('processor-filter', function() {
+  describe('processor-filter', function() {
 
-	it('Should run and return the input as the record is not filtered out', function() {
-	    return filter().run().should.be.rejectedWith(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should run and return undefined as the record is filtered out', function() {
-	    return filter().run().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be a function', function() {
+        expect(filterFactory).to.be.a('function');
+      });
 
-	it('Should set converter succesfully', function() {
-	    (function(){
-		filter().setConverter();
-	    }).should.throw(/^Not implemented/);
-	});
-    
+      it('Should return the expected object', function() {
+        expect(filterFactory()).to.be.an('object').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('run');
+      });
+
+      describe('object', function() {
+
+        it('Should set the logger succesfully', function() {
+          expect(filterFactory().setLogger).to.not.throw();
+        });
+
+        it('Should set the converter succesfully', function() {
+          expect(filterFactory().setConverter).to.not.throw();
+        });
+
+        describe('#run', function() {
+
+          it("Should resolve with an array which has an non-undefined value as it's first element because the record passes the filter", function() {
+            return expect(filterFactory().run()).to.eventually.eql([1]);
+          });
+
+          it("Should resolve with an array which has an undefined value as it's first element because the record doesn't pass the filter", function() {
+            return expect(filterFactory().run()).to.eventually.eql([1]);
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(filterFactory().run()).to.eventually.eql([1]);
+          });
+
+        });
+
+      });
+
     });
+
+  });
 
 }

@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,47 +28,72 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/processors/match/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/match/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/processors/match/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/match/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, match)
+function factory(chai, chaiAsPromised, matchFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('processor-match', function() {
+  describe('processor-match', function() {
 
-	it('Should set the record store successfully', function() {
-	    (function() {
-		match().setRecordStore();
-	    }).should.throw(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should run and return the input', function() {
-	    return match().run().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be a function', function() {
+        expect(matchFactory).to.be.a('function');
+      });
 
-	it('Should run and return the input record and matched records', function() {
-	    return match().run().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should return the expected object', function() {
+        expect(matchFactory()).to.be.an('object').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('setRecordStore').and.to
+          .respondTo('run');
+      });
 
-	it('Should set converter succesfully', function() {
-	    (function(){
-		match().setConverter();
-	    }).should.throw(/^Not implemented/);
-	});
-    
+      describe('object', function() {
+
+        it('Should set the logger succesfully', function() {
+          expect(matchFactory().setLogger).to.not.throw();
+        });
+
+        it('Should set the converter succesfully', function() {
+          expect(matchFactory().setConverter).to.not.throw();
+        });
+
+        it('Should set the record store succesfully', function() {
+          expect(matchFactory().setRecordStore).to.not.throw();
+        });
+
+        describe('#run', function() {
+
+          it("Should return an array which has the original record as it's first element and the match results as the second", function() {
+            return expect(matchFactory().run({})).to.eventually.eql([{}, []]);
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(matchFactory().run({})).to.eventually.eql([{}, []]);
+          });
+          
+
+        });
+
+      });
+
     });
+    
+  });
 
 }

@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,52 +28,71 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/processors/load/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/load/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+	  define(['chai', 'chai-as-promised', '../lib/processors/load/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/load/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, load)
+function factory(chai, chaiAsPromised, loadFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('processor-load', function() {
+  describe('processor-load', function() {
 
-	it('Should set the record store successfully', function() {
-	    (function() {
-		load().setRecordStore();
-	    }).should.throw(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should run and return expected load result', function() {
-	    return load().run().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be a function', function() {
+        expect(loadFactory).to.be.a('function');
+      });
 
-	it('Should run and reject because of invalid load options', function() {
-	    return load().run().should.be.rejectedWith(/^Not implemented/);
-	});
- 
-	it('Should set converter succesfully', function() {
-	    (function(){
-		load().setConverter();
-	    }).should.throw(/^Not implemented/);
-	});
-   
-	it('Should resolve with record data in results, because of results level', function() {
-	    (function() {
-		load().setResultsLevel();
-	    }).should.throw(/^Not implemented/);
-	});
+      it('Should return the expected object', function() {
+        expect(loadFactory()).to.be.an('object').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('setRecordStore').and.to
+          .respondTo('run');
+      });
+
+      describe('object', function() {
+
+        it('Should set the logger succesfully', function() {
+          expect(loadFactory().setLogger).to.not.throw();
+        });
+
+        it('Should set the converter succesfully', function() {
+          expect(loadFactory().setConverter).to.not.throw();
+        });
+
+        it('Should set the record store succesfully', function() {
+          expect(loadFactory().setRecordStore).to.not.throw();
+        });
+
+        describe('#run', function() {
+
+          it("Should return an array which has the load result as the first element", function() {
+            return expect(loadFactory().run({})).to.eventually.eql([{}]);
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(loadFactory().run({})).to.eventually.eql([{}]);
+          });
+          
+        });
+
+      });
+
     });
+
+  });
 
 }

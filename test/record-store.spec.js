@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,51 +28,123 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/record-store/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-store/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/record-store/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-store/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, recordStore)
+function factory(chai, chaiAsPromised, recordStoreFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('record-store', function() {
+  describe('record-store', function() {
 
-	it('Should create a new record', function() {
-	    return recordStore().create().should.be.rejectedWith(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should return a single record', function() {
-	    return recordStore().read().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be a function', function() {
+        expect(recordStoreFactory).to.be.a('function');
+      });
 
-	it('Should update a record', function() {
-	    return recordStore().update().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should return the expected object', function() {
+        expect(recordStoreFactory()).to.be.an('object').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('toggleTransaction').and.to
+          .respondTo('rollback').and.to
+          .respondTo('create').and.to
+          .respondTo('read').and.to
+          .respondTo('update').and.to
+          .respondTo('delete');
+      });
 
-	it('Should delete a record', function() {
-	    return recordStore().delete().should.be.rejectedWith(/^Not implemented/);
-	});
+      describe('object', function() {
 
-	it('Should start transaction, create a record and end transaction', function() {
-	    return recordStore().toggleTransaction().should.be.rejectedWith(/^Not implemented/);
-	});
+        it('Should set the logger succesfully', function() {
+          expect(recordStoreFactory().setLogger).to.not.throw();
+        });
 
-	it('Should start transaction, delete a record and roll back the operation', function() {
-	    return recordStore().rollback().should.be.rejectedWith(/^Not implemented/);
-	});
-    
+        it('Should set the converter succesfully', function() {
+          expect(recordStoreFactory().setConverter).to.not.throw();
+        });
+
+        it('Should toggle the transaction option succesfully', function() {
+          expect(recordStoreFactory().toggleTransaction).to.not.throw();
+        });
+
+        describe('#create', function() {
+
+          it('Should create the record successfully and return the expected object', function() {
+            return expect(recordStoreFactory().create()).to.eventually.eql({id: undefined});
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(recordStoreFactory().create()).to.eventually.eql({id: undefined});
+          });
+
+        });
+
+        describe('#read', function() {
+
+          it('Should read records successfully and return an array of records', function() {
+            return expect(recordStoreFactory().read()).to.eventually.eql([]);
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(recordStoreFactory().read()).to.eventually.eql([]);
+          });
+
+        });
+
+        describe('#update', function() {
+
+          it('Should update the record successfully and return the expected object', function() {
+            return expect(recordStoreFactory().update()).to.eventually.eql({});
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(recordStoreFactory().update()).to.eventually.eql({});
+          });
+
+        });
+
+        describe('#delete', function() {
+
+          it('Should delete the record successfully ', function() {
+            return expect(recordStoreFactory().delete()).to.eventually.become.undefined;
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(recordStoreFactory().delete()).to.eventually.become.undefined;
+          });
+
+        });
+
+        describe('#rollback', function() {
+
+          it('Should perform a rollback succesfully', function() {
+            return expect(recordStoreFactory().rollback()).to.eventually.become.undefined;
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(recordStoreFactory().rollback()).to.eventually.become.undefined;
+          });
+
+        });
+
+      });
+
     });
+
+  });
 
 }

@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,46 +28,67 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/processors/merge/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/merge/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/processors/merge/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/processors/merge/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, merge)
+function factory(chai, chaiAsPromised, mergeFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('processor-merge', function() {
+  describe('processor-merge', function() {
 
-	it('Should resolve with the input record and empty array as there is nothing to merge', function() {
-	    return merge().run().should.be.rejectedWith(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should resolve with the merged record and an array of metadata about the merged records', function() {
-	    return merge().run().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be a function', function() {
+        expect(mergeFactory).to.be.a('function');
+      });
 
-	it('Should convert the input record and resolve with the merged record and array of metadata about the merged records', function() {
-	    (function(){
-		merge().setConverter();
-	    }).should.throw(/^Not implemented/);
-	});
+      it('Should return the expected object', function() {   
+        expect(mergeFactory()).to.be.an('object').and.to
+          .respondTo('setConverter').and.to
+          .respondTo('setLogger').and.to
+          .respondTo('run');
+      });
 
-	it('Should resolve with the merged record and an array of merged records, because of results level', function() {
-	    (function() {
-		merge().setResultsLevel();
-	    }).should.throw(/^Not implemented/);
-	});
+      describe('object', function() {
+
+        it('Should set the logger succesfully', function() {
+          expect(mergeFactory().setLogger).to.not.throw();
+        });
+
+        it('Should set the converter succesfully', function() {
+          expect(mergeFactory().setConverter).to.not.throw();
+        });
+
+        describe('#run', function() {
+
+          it("Should return an array which has the modified record as it's first element and the record store records (Which were merged into the record) as the second", function() {
+            return expect(mergeFactory().run({})).to.eventually.eql([{}, []]);
+          });
+
+          it('Should reject if there are any errors', function() {
+            return expect(mergeFactory().run({})).to.eventually.eql([{}, []]);
+          });
+          
+
+        });
+
+      });
+
     });
+
+  });
 
 }

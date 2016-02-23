@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,39 +28,77 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', 'chai-as-promised', '../lib/record-set/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-set/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', 'chai-as-promised', '../lib/record-set/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-set/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, recordSet)
+function factory(chai, chaiAsPromised, recordSetFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var should = chai.should();
-    
-    chai.use(chaiAsPromised);
+  var expect = chai.expect;
+  
+  chai.use(chaiAsPromised);
 
-    describe('record-set', function() {
+  describe('record-set', function() {
 
-	it('Should initialise succesfully', function() {
-	    return recordSet().initialise().should.be.rejectedWith(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should resolve with the next record succesfully', function() {
-	    return recordSet().next().should.be.rejectedWith(/^Not implemented/);
-	});
+      it('Should be be a function', function() {
+        expect(recordSetFactory).to.be.a('function');
+      });
 
-	it('Should resolve with undefined succesfully because there are no more records left', function() {
-	    return recordSet().next().should.be.rejectedWith(/^Not implemented/);
-	});
-    
+      it('Should create a proper object', function() {
+        expect(recordSetFactory()).to.be.an('object').and.to
+          .respondTo('initialise').and.to
+          .respondTo('next').and.to
+          .respondTo('setLogger');
+      });
+
+
+      describe('object', function() {
+        
+        it('Should set logger succesfully', function() {
+          expect(recordSetFactory().setLogger).to.not.throw();
+        });
+
+        it('Should initialise succesfully', function() {
+          return expect(recordSetFactory().initialise()).to.eventually.become.undefined;
+        });
+
+        describe('#next', function() {
+
+          it('Should resolve with the next record succesfully', function() {
+            return expect(recordSetFactory().initialise().then(function() {
+              return recordSet.next();
+            })).to.eventually.become.undefined;
+          });
+          
+          it('Should resolve with the next record and related records succesfully', function() {
+            return expect(recordSetFactory().initialise(undefined, 1).then(function() {
+              return recordSet.next();
+            })).to.eventually.become.undefined;
+          });
+          
+          it('Should resolve with undefined succesfully because there are no more records left', function() {
+            return expect(recordSetFactory().initialise().then(function() {
+              return recordSet.next();
+            })).to.eventually.become.undefined;
+          });
+          
+        });
+        
+      });
+      
     });
-
+    
+  });
+  
 }

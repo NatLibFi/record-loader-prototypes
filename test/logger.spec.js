@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,38 +28,123 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', '../lib/logger/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('../lib/logger/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', '../lib/logger/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('../lib/logger/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, logger)
+function factory(chai, createLoggerFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var expect = chai.expect;
+  var expect = chai.expect;
 
-    describe('logger', function() {
+  describe('logger', function() {
 
-	it('It should log an error message');
-	it('It should log a warning message');
-	it('It should log an info message');
-	it('It should log a debug message');
-	it('It should log a trace message');
+    describe('factory', function() {
 
-	it('It should not log a warning message');
-	it('It should not log an info message');
-	it('It should not log a debug message');
-	it('It should not log a trace message');
+      it('Should be a function', function() {
+        expect(createLoggerFactory).to.be.a('function');
+      });
 
-	it('It should contain the configured prefixes in the message');
+      it('Should create a function', function() {
+        expect(createLoggerFactory()).to.be.a('function');
+      });
+
+      describe('loggerFactory', function() {
+
+        it('Should create the expected object', function() {
+          expect(createLoggerFactory()()).to.be.an('object').and.to
+            .respondTo('error').and.to
+            .respondTo('warn').and.to
+            .respondTo('info').and.to
+            .respondTo('debug').and.to
+            .respondTo('trace');
+        });
+        
+        describe('object', function() {
+          
+          describe('#error', function() {
+
+            it('It should log an error message', function() {
+              expect(createLoggerFactory()().error).to.not.throw();             
+            });
+
+          });
+          
+          describe('#warn', function() {
+
+            it('It should log a warning message', function() {
+              expect(createLoggerFactory()('warn').warn).to.not.throw();
+            });
+
+            it('It should not log a warning message', function() {
+              expect(createLoggerFactory()().warn).to.not.throw();
+            });
+
+          });
+          
+          describe('#info', function() {
+
+            it('It should log a info message', function() {
+              expect(createLoggerFactory()('info').info).to.not.throw();
+            });
+
+            it('It should not log a info message', function() {
+              expect(createLoggerFactory()().info).to.not.throw();
+            });
+
+          });
+          
+          describe('#debug', function() {
+
+            it('It should log a debug message', function() {
+              expect(createLoggerFactory()('debug').debug).to.not.throw();
+            });
+
+            it('It should not log a debug message', function() {
+              expect(createLoggerFactory()().debug).to.not.throw();
+            });
+
+          });
+          
+          describe('#trace', function() {
+
+            it('It should log a trace message', function() {
+              expect(createLoggerFactory()('trace').trace).to.not.throw();
+            });
+
+            it('It should not log a trace message', function() {
+              expect(createLoggerFactory()().trace).to.not.throw();
+            });
+
+          });
+          
+          
+          it('It should contain prefixes in the message', function() {
+            expect(createLoggerFactory()('debug', ['FOO', 'BAR']).debug).to.not.throw();
+          });
+
+          it('It should contain the module name in the message', function() {
+            expect(createLoggerFactory()('debug', undefined, 'FOOBAR').debug).to.not.throw();
+          });
+
+          it('It should contain prefixes and the module name in the message', function() {
+            expect(createLoggerFactory()('debug', ['FOO', 'BAR'], 'FOOBAR').debug).to.not.throw();
+          });
+          
+        });
+
+      });
 
     });
+
+  });
 
 }

@@ -4,7 +4,7 @@
  *
  * Base prototypes of processors, converters, record store and record set for recordLoader
  *
- * Copyright (c) 2015 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2015-2016 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of record-loader-prototypes
  *
@@ -28,33 +28,55 @@
 
 (function (root, factory) {
 
-    'use strict';
+  'use strict';
 
-    if (typeof define === 'function' && define.amd) {
-	define(['chai', '../lib/converters/prototype'], factory);
-    } else if (typeof module === 'object' && module.exports) {
-        module.exports = factory(require('chai'), require('../lib/converters/prototype'));
-    }
+  if (typeof define === 'function' && define.amd) {
+    define(['chai', '../lib/converters/prototype'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory(require('chai'), require('../lib/converters/prototype'));
+  }
 
 }(this, factory));
 
-function factory(chai, converter)
+function factory(chai, converterFactory)
 {
 
-    'use strict';
+  'use strict';
 
-    var expect = chai.expect;
+  var expect = chai.expect;
 
-    describe('converter', function() {
+  describe('converter', function() {
 
-	it('Should convert record to a native format', function() {
-	    expect(converter().convert).to.throw(/^Not implemented/);
-	});
+    describe('factory', function() {
 
-	it('Should fail to convert unsupported record type to native format', function() {
-	    expect(converter().convert).to.throw(/^Not implemented/);
-	});
-    
+      it('Should be a function', function() {
+        expect(converterFactory).to.be.a('function');
+      });
+
+      it('Should return the expected object', function() {
+        expect(converterFactory()).to.an('object').and.to
+          .respondTo('convert').and.to
+          .respondTo('setLogger');
+      });
+
+      describe('object', function() {
+        
+        it('Should set a logger succesfully', function() {
+          expect(converterFactory().setLogger).to.not.throw();
+        });
+
+        it('Should convert record to a native format', function() {
+          expect(converterFactory().convert).to.not.throw();
+        });
+
+        it('Should fail to convert unsupported record type to native format', function() {
+          expect(converterFactory().convert).to.not.throw();
+        });
+
+      });
+
     });
+    
+  });
 
 }
