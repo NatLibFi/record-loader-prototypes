@@ -82,10 +82,6 @@ function factory(chai, chaiAsPromised, loadFactory)
           it("Should return an array which has the load result as the first element", function() {
             return expect(loadFactory().run({})).to.eventually.eql([{}]);
           });
-
-          it('Should reject if there are any errors', function() {
-            return expect(loadFactory().run({})).to.eventually.eql([{}]);
-          });
           
         });
 

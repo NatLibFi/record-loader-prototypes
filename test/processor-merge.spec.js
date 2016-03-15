@@ -76,12 +76,7 @@ function factory(chai, chaiAsPromised, mergeFactory)
 
           it("Should return an array which has the modified record as it's first element and the record store records (Which were merged into the record) as the second", function() {
             return expect(mergeFactory().run({})).to.eventually.eql([{}, []]);
-          });
-
-          it('Should reject if there are any errors', function() {
-            return expect(mergeFactory().run({})).to.eventually.eql([{}, []]);
-          });
-          
+          });          
 
         });
 

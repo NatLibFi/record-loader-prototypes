@@ -87,19 +87,11 @@ function factory(chai, chaiAsPromised, recordStoreFactory)
             return expect(recordStoreFactory().create()).to.eventually.eql({id: undefined});
           });
 
-          it('Should reject if there are any errors', function() {
-            return expect(recordStoreFactory().create()).to.eventually.eql({id: undefined});
-          });
-
         });
 
         describe('#read', function() {
 
           it('Should read records successfully and return an array of records', function() {
-            return expect(recordStoreFactory().read()).to.eventually.eql([]);
-          });
-
-          it('Should reject if there are any errors', function() {
             return expect(recordStoreFactory().read()).to.eventually.eql([]);
           });
 
@@ -111,10 +103,6 @@ function factory(chai, chaiAsPromised, recordStoreFactory)
             return expect(recordStoreFactory().update()).to.eventually.eql({});
           });
 
-          it('Should reject if there are any errors', function() {
-            return expect(recordStoreFactory().update()).to.eventually.eql({});
-          });
-
         });
 
         describe('#delete', function() {
@@ -123,19 +111,11 @@ function factory(chai, chaiAsPromised, recordStoreFactory)
             return expect(recordStoreFactory().delete()).to.eventually.become.undefined;
           });
 
-          it('Should reject if there are any errors', function() {
-            return expect(recordStoreFactory().delete()).to.eventually.become.undefined;
-          });
-
         });
 
         describe('#rollback', function() {
 
           it('Should perform a rollback succesfully', function() {
-            return expect(recordStoreFactory().rollback()).to.eventually.become.undefined;
-          });
-
-          it('Should reject if there are any errors', function() {
             return expect(recordStoreFactory().rollback()).to.eventually.become.undefined;
           });
 

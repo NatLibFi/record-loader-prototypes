@@ -103,9 +103,6 @@ function factory(chai, chaiAsPromised, hookFactory)
           it('Should resolve', function() {
             return expect(hookFactory().run()).to.eventually.become.undefined;
           });
-          it('Should reject if there are any errors', function() {
-            return expect(hookFactory().run()).to.eventually.become.undefined;
-          });
 
         });
 

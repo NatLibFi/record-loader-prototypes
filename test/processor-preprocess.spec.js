@@ -82,11 +82,6 @@ function factory(chai, chaiAsPromised, preprocessFactory)
             return expect(preprocessFactory().run({})).to.eventually.eql([{}]);
           });
 
-          it('Should reject if there are any errors', function() {
-            return expect(preprocessFactory().run({})).to.eventually.eql([{}]);
-          });
-          
-
         });
 
       });
