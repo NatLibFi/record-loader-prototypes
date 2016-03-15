@@ -76,21 +76,33 @@ function factory(chai, chaiAsPromised, recordSetFactory)
         describe('#next', function() {
 
           it('Should resolve with the next record succesfully', function() {
-            return expect(recordSetFactory().initialise().then(function() {
-              return recordSet.next();
+
+            var record_set = recordSetFactory();
+
+            return expect(record_set.initialise().then(function() {
+              return record_set.next();
             })).to.eventually.become.undefined;
+
           });
           
           it('Should resolve with the next record and related records succesfully', function() {
-            return expect(recordSetFactory().initialise(undefined, 1).then(function() {
-              return recordSet.next();
+
+            var record_set = recordSetFactory();
+
+            return expect(record_set.initialise(undefined, 1).then(function() {
+              return record_set.next();
             })).to.eventually.become.undefined;
+
           });
           
           it('Should resolve with undefined succesfully because there are no more records left', function() {
-            return expect(recordSetFactory().initialise().then(function() {
-              return recordSet.next();
+
+            var record_set = recordSetFactory();
+
+            return expect(record_set.initialise().then(function() {
+              return record_set.next();
             })).to.eventually.become.undefined;
+
           });
           
         });
