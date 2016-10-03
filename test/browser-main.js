@@ -70,14 +70,14 @@ require.config({
       "mocha@*": "mocha@3.1.0",
       "karma@>=0.9": "karma@1.3.0",
       "requirejs@^2.1.0": "requirejs@2.3.2",
-      "lodash@^4.0.1": "lodash@4.16.2",
-      "phantomjs-prebuilt@^2.1.7": "phantomjs-prebuilt@2.1.12",
       "karma@>=0.12": "karma@1.3.0",
       "lodash@^2.4.1": "lodash@2.4.2",
       "ramda@^0.4.0": "ramda@0.4.3",
       "resolve@^1.0.0": "resolve@1.1.7",
       "when@^3.4.4": "when@3.7.7",
       "pkguid@^1.1.1": "pkguid@1.1.1",
+      "lodash@^4.0.1": "lodash@4.16.2",
+      "phantomjs-prebuilt@^2.1.7": "phantomjs-prebuilt@2.1.12",
       "request@~2.72.0": "request@2.72.0",
       "async@~1.5.2": "async@1.5.2",
       "glob@^7.0.5": "glob@7.1.0",
@@ -597,6 +597,10 @@ require.config({
     "useragent@2.1.9": {
       "lru-cache": "lru-cache@2.2.4"
     },
+    "when@3.7.7": {
+      "when": "./dist/browser/when.js",
+      "vertx": false
+    },
     "phantomjs-prebuilt@2.1.12": {
       "es6-promise": "es6-promise@3.2.1",
       "extract-zip": "extract-zip@1.5.0",
@@ -607,10 +611,6 @@ require.config({
       "request": "request@2.74.0",
       "request-progress": "request-progress@2.0.1",
       "which": "which@1.2.11"
-    },
-    "when@3.7.7": {
-      "when": "./dist/browser/when.js",
-      "vertx": false
     },
     "request@2.72.0": {
       "aws-sign2": "aws-sign2@0.6.0",
@@ -1520,16 +1520,6 @@ require.config({
       "location": "node_modules/requirejs"
     },
     {
-      "name": "lodash@4.16.2",
-      "main": "lodash.js",
-      "location": "node_modules/karma-phantomjs-launcher/node_modules/lodash"
-    },
-    {
-      "name": "phantomjs-prebuilt@2.1.12",
-      "main": "lib/phantomjs",
-      "location": "node_modules/karma-phantomjs-launcher/node_modules/phantomjs-prebuilt"
-    },
-    {
       "name": "lodash@2.4.2",
       "main": "dist/lodash.js",
       "location": "node_modules/requirejs-configurator/node_modules/lodash"
@@ -1548,6 +1538,16 @@ require.config({
       "name": "pkguid@1.1.1",
       "main": "index.js",
       "location": "node_modules/requirejs-configurator/node_modules/pkguid"
+    },
+    {
+      "name": "lodash@4.16.2",
+      "main": "lodash.js",
+      "location": "node_modules/karma-phantomjs-launcher/node_modules/lodash"
+    },
+    {
+      "name": "phantomjs-prebuilt@2.1.12",
+      "main": "lib/phantomjs",
+      "location": "node_modules/karma-phantomjs-launcher/node_modules/phantomjs-prebuilt"
     },
     {
       "name": "lcov-parse@0.0.10",
