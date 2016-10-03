@@ -26,99 +26,121 @@
  *
  **/
 
-(function (root, factory) {
+(function(root, factory) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['chai', 'chai-as-promised', '../lib/record-store/prototype'], factory);
+    define([
+      'chai/chai',
+      'chai-as-promised',
+      'es6-polyfills/lib/polyfills/promise',
+      '../lib/record-store/prototype'
+    ], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-store/prototype'));
+    module.exports = factory(
+      require('chai'),
+      require('chai-as-promised'),
+      require('es6-polyfills/lib/polyfills/promise'),
+      require('../lib/record-store/prototype')
+    );
   }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, recordStoreFactory)
+function factory(chai, chaiAsPromised, Promise, recordStoreFactory)
 {
 
   'use strict';
 
   var expect = chai.expect;
-  
+
   chai.use(chaiAsPromised);
 
   describe('record-store', function() {
 
     describe('factory', function() {
 
-      it('Should be a function', function() {
-        expect(recordStoreFactory).to.be.a('function');
-      });
-
-      it('Should return the expected object', function() {
-        expect(recordStoreFactory()).to.be.an('object').and.to
-          .respondTo('setConverter').and.to
-          .respondTo('setLogger').and.to
-          .respondTo('toggleTransaction').and.to
-          .respondTo('rollback').and.to
-          .respondTo('create').and.to
-          .respondTo('read').and.to
-          .respondTo('update').and.to
-          .respondTo('delete');
+      it('Should create the expected object', function() {
+        expect(recordStoreFactory()).to.be.an('object')
+          .and.to.respondTo('setLogger')
+          .and.to.respondTo('rollback')
+          .and.to.respondTo('create')
+          .and.to.respondTo('read')
+          .and.to.respondTo('update')
+          .and.to.respondTo('delete');
       });
 
       describe('object', function() {
 
-        it('Should set the logger succesfully', function() {
-          expect(recordStoreFactory().setLogger).to.not.throw();
-        });
+        var record_store = recordStoreFactory();       
 
-        it('Should set the converter succesfully', function() {
-          expect(recordStoreFactory().setConverter).to.not.throw();
-        });
+        describe('#setLogger', function() {
 
-        it('Should toggle the transaction option succesfully', function() {
-          expect(recordStoreFactory().toggleTransaction).to.not.throw();
-        });
-
-        describe('#create', function() {
-
-          it('Should create the record successfully and return the expected object', function() {
-            return expect(recordStoreFactory().create()).to.eventually.eql({id: undefined});
-          });
-
-        });
-
-        describe('#read', function() {
-
-          it('Should read records successfully and return an array of records', function() {
-            return expect(recordStoreFactory().read()).to.eventually.eql([]);
-          });
-
-        });
-
-        describe('#update', function() {
-
-          it('Should update the record successfully and return the expected object', function() {
-            return expect(recordStoreFactory().update()).to.eventually.eql({});
-          });
-
-        });
-
-        describe('#delete', function() {
-
-          it('Should delete the record successfully ', function() {
-            return expect(recordStoreFactory().delete()).to.eventually.become.undefined;
+          it('Should return itself', function() {
+            expect(record_store.setLogger()).to.eql(record_store);
           });
 
         });
 
         describe('#rollback', function() {
 
-          it('Should perform a rollback succesfully', function() {
-            return expect(recordStoreFactory().rollback()).to.eventually.become.undefined;
+          it('Should return a Promise and resolve with undefined', function() {
+            return record_store.rollback().then(function(result) {
+              expect(result).to.be.undefined /* jshint -W030 */;
+            });
           });
 
+          it('Should roll back the changes done by #create', function(){});
+          
+        });
+
+        describe('#create', function() {
+
+          it('Should return a Promise which resolves with an object', function() {
+            return record_store.create().then(function(result) {
+              expect(result).to.be.an('object');
+            });
+          });
+
+          it('Should create a new record in the store', function(){});
+          
+        });
+
+        describe('#read', function() {
+
+          it('Should return a Promise which resolves with an array', function() {
+            return record_store.read().then(function(result) {
+              expect(result).to.be.an('array');
+            });
+          });
+
+          it('Should read records from the store', function(){});
+          
+        });
+
+        describe('#update', function() {
+
+          it('Should return a Promise which resolves with an array', function() {
+            return record_store.update().then(function(result) {
+              expect(result).to.be.an('array');
+            });
+          });
+
+          it('Should update records in the store', function(){});
+          
+        });
+
+        describe('#delete', function() {
+
+          it('Should return a Promise which resolves with an array', function() {
+            return record_store.delete().then(function(result) {
+              expect(result).to.be.an('array');
+            });
+          });
+
+          it('Should delete records from the store', function(){});
+          
         });
 
       });

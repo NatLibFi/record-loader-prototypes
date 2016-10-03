@@ -33,71 +33,66 @@
   if (typeof define === 'function' && define.amd) {
     define([
       'chai/chai',
+      'chai-as-promised',
       'es6-polyfills/lib/polyfills/promise',
-      '../lib/result-formatter/prototype'
+      '../../lib/processors/preprocess/prototype'
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
       require('chai'),
+      require('chai-as-promised'),
       require('es6-polyfills/lib/polyfills/promise'),
-      require('../lib/result-formatter/prototype')
+      require('../../lib/processors/preprocess/prototype')
     );
   }
 
 }(this, factory));
 
-function factory(chai, Promise, resultFormatterFactory)
+function factory(chai, chaiAsPromised, Promise, processorFactory)
 {
 
   'use strict';
 
   var expect = chai.expect;
 
-  describe('result-formatter', function() {
+  chai.use(chaiAsPromised);
+  
+  describe('processors', function() {
 
-    describe('factory', function() {
+    describe('preprocess', function() {
 
-      it('Should create the expected object', function() {
-        expect(resultFormatterFactory()).to.be.an('object')
-          .and.to.respondTo('setLevel')
-          .and.to.respondTo('setLogger')
-          .and.to.respondTo('run');
-      });
+      describe('factory', function() {
 
-      describe('#getLevels', function() {
-
-        it('Should return the expected object which is immutable', function() {
-          expect(resultFormatterFactory.getLevels()).to.have.all.keys(['statistics', 'recordMetaData', 'recordData']).and.to.be.frozen.and.to.be.sealed /* jshint -W030 */;
+        it('Should create the expected object', function() {
+          expect(processorFactory()).to.be.an('object')
+            .and.to.respondTo('setLogger')
+            .and.to.respondTo('run');
         });
 
-      });
-      
-      describe('object', function() {
+        describe('object', function() {
 
-        var result_formatter = resultFormatterFactory();
+          var processor = processorFactory();
 
-        describe('#setLogger', function() {
+          describe('#setLogger', function() {
 
-          it('Should return itself', function() {
-            expect(result_formatter.setLogger()).to.eql(result_formatter);
+            it('Should return itself', function() {
+              expect(processor.setLogger()).to.eql(processor);
+            });
+
           });
 
-        });
+          describe('#run', function() {
 
-        describe('#setLevel', function() {
+            it('Should return a Promise which resolves with an object', function() {
+              return processor.run().then(function(result) {
+                expect(result).to.be.an('object') /* jshint -W030 */;
+              });
+            });
 
-          it('Should return itself', function() {
-            expect(result_formatter.setLevel()).to.eql(result_formatter);
+            it('Should modify the record', function() {});
+            
           });
 
-        });
-
-        describe('#run', function() {
-
-          it('Should return a Promise', function() {
-            expect(result_formatter.run()).to.be.an.instanceof(Promise);
-          });
-          
         });
 
       });

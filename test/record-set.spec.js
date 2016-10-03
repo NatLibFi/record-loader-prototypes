@@ -26,91 +26,82 @@
  *
  **/
 
-(function (root, factory) {
+(function(root, factory) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['chai', 'chai-as-promised', '../lib/record-set/prototype'], factory);
+    define([
+      'chai/chai',
+      'chai-as-promised',
+      'es6-polyfills/lib/polyfills/promise',
+      '../lib/record-set/prototype'
+    ], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('chai'), require('chai-as-promised'), require('../lib/record-set/prototype'));
+    module.exports = factory(
+      require('chai'),
+      require('chai-as-promised'),
+      require('es6-polyfills/lib/polyfills/promise'),
+      require('../lib/record-set/prototype')
+    );
   }
 
 }(this, factory));
 
-function factory(chai, chaiAsPromised, recordSetFactory)
+function factory(chai, chaiAsPromised, Promise, recordSetFactory)
 {
 
   'use strict';
 
   var expect = chai.expect;
-  
+
   chai.use(chaiAsPromised);
 
   describe('record-set', function() {
 
     describe('factory', function() {
 
-      it('Should be be a function', function() {
-        expect(recordSetFactory).to.be.a('function');
+      it('Should create the expected object', function() {
+        expect(recordSetFactory()).to.be.an('object')
+          .and.to.respondTo('setLogger')
+          .and.to.respondTo('initialize')
+          .and.to.respondTo('get');
       });
-
-      it('Should create a proper object', function() {
-        expect(recordSetFactory()).to.be.an('object').and.to
-          .respondTo('initialise').and.to
-          .respondTo('next').and.to
-          .respondTo('setLogger');
-      });
-
 
       describe('object', function() {
-        
-        it('Should set logger succesfully', function() {
-          expect(recordSetFactory().setLogger).to.not.throw();
+
+        var record_set = recordSetFactory();
+
+        describe('#setLogger', function() {
+
+          it('Should return itself', function() {
+            expect(record_set.setLogger()).to.eql(record_set);
+          });
+
         });
 
-        it('Should initialise succesfully', function() {
-          return expect(recordSetFactory().initialise()).to.eventually.become.undefined;
-        });
+        describe('#initialize', function() {
 
-        describe('#next', function() {
-
-          it('Should resolve with the next record succesfully', function() {
-
-            var record_set = recordSetFactory();
-
-            return expect(record_set.initialise().then(function() {
-              return record_set.next();
-            })).to.eventually.become.undefined;
-
-          });
-          
-          it('Should resolve with the next record and related records succesfully', function() {
-
-            var record_set = recordSetFactory();
-
-            return expect(record_set.initialise(undefined, 1).then(function() {
-              return record_set.next();
-            })).to.eventually.become.undefined;
-
-          });
-          
-          it('Should resolve with undefined succesfully because there are no more records left', function() {
-
-            var record_set = recordSetFactory();
-
-            return expect(record_set.initialise().then(function() {
-              return record_set.next();
-            })).to.eventually.become.undefined;
-
+          it('Should return a Promise', function() {
+            expect(record_set.initialize()).to.be.an.instanceof(Promise);
           });
           
         });
-        
+
+        describe('#get', function() {
+
+          it('Should return a Promise which resolves with an array', function() {
+            return record_set.get().then(function(result) {
+              expect(result).to.be.an('array');
+            });
+          });
+          
+        });
+
       });
-      
+
     });
-    
+
   });
-  
+
 }

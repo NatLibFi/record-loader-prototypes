@@ -26,19 +26,25 @@
  *
  **/
 
-(function (root, factory) {
+(function(root, factory) {
 
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['chai', '../lib/logger/prototype'], factory);
+    define([
+      'chai/chai',
+      '../lib/logger/prototype'
+    ], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('chai'), require('../lib/logger/prototype'));
+    module.exports = factory(
+      require('chai'),
+      require('../lib/logger/prototype')
+    );
   }
 
 }(this, factory));
 
-function factory(chai, createLoggerFactory)
+function factory(chai, loggerFactory)
 {
 
   'use strict';
@@ -49,98 +55,215 @@ function factory(chai, createLoggerFactory)
 
     describe('factory', function() {
 
-      it('Should be a function', function() {
-        expect(createLoggerFactory).to.be.a('function');
+      it('Should create the expected object', function() {
+        expect(loggerFactory()).to.be.an('object')
+          .and.to.respondTo('setLevel')
+          .and.to.respondTo('error')
+          .and.to.respondTo('warning')
+          .and.to.respondTo('info')
+          .and.to.respondTo('debug');
       });
 
-      it('Should create a function', function() {
-        expect(createLoggerFactory()).to.be.a('function');
+      describe('#getLevels', function() {
+
+        it('Should return the expected object which is immutable', function() {
+          expect(loggerFactory.getLevels()).to.have.all.keys(['error', 'warning', 'info', 'debug']).and.to.be.frozen.and.to.be.sealed /* jshint -W030 */;
+        });
+
       });
 
-      describe('loggerFactory', function() {
+      describe('object', function() {
 
-        it('Should create the expected object', function() {
-          expect(createLoggerFactory()()).to.be.an('object').and.to
-            .respondTo('error').and.to
-            .respondTo('warn').and.to
-            .respondTo('info').and.to
-            .respondTo('debug').and.to
-            .respondTo('trace');
+        var logger = loggerFactory();
+
+        describe('#setLevel', function() {
+
+          it('Should return itself', function() {
+            expect(logger.setLevel()).to.eql(logger);
+          });
+
+        });
+
+        describe('#getLevel', function() {
+
+          it('Should return the current logging level', function() {            
+            expect(logger.getLevel()).to.be.undefined /* jshint -W030 */;
+          });
+
+        });
+
+        describe('#getName', function() {
+
+          it('Should return undefined (Because the logger is not an instance', function() {
+            expect(logger.getName()).to.be.undefined /* jshint -W030 */;
+          });
+          
+        });
+
+        describe('#setAutoFlush', function() {
+
+
+          it('Should return itself', function() {
+            expect(logger.setAutoFlush()).to.eql(logger);
+          });
+
+          it('Should automate the flushing of the message stack', function() {});
+
+
+        });
+
+        describe('#flush', function() {
+
+          it('Should return itself', function() {
+            expect(logger.flush()).to.eql(logger);
+          });
+
+          it('Should flush the message stack', function() {});
+
+        });
+
+        describe('#error', function() {
+
+          it('Should return itself', function() {
+            expect(logger.error()).to.eql(logger);
+          });
+
+          it('Should log the message', function() {
+
+            logger.error('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
+          });
+
+        });
+
+        describe('#warning', function() {
+
+          it('Should return itself', function() {
+            expect(logger.warning()).to.eql(logger);
+          });
+
+          it('Should log the message', function() {
+
+            logger
+              .setLevel('warning')
+              .warning('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
+          });
+
+          it('Should not log the message', function() {
+
+            logger
+              .setLevel('error')
+              .warning('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
+          });
+        
         });
         
-        describe('object', function() {
-          
-          describe('#error', function() {
+        describe('#info', function() {
 
-            it('It should log an error message', function() {
-              expect(createLoggerFactory()().error).to.not.throw();             
-            });
-
-          });
-          
-          describe('#warn', function() {
-
-            it('It should log a warning message', function() {
-              expect(createLoggerFactory()('warn').warn).to.not.throw();
-            });
-
-            it('It should not log a warning message', function() {
-              expect(createLoggerFactory()().warn).to.not.throw();
-            });
-
-          });
-          
-          describe('#info', function() {
-
-            it('It should log a info message', function() {
-              expect(createLoggerFactory()('info').info).to.not.throw();
-            });
-
-            it('It should not log a info message', function() {
-              expect(createLoggerFactory()().info).to.not.throw();
-            });
-
-          });
-          
-          describe('#debug', function() {
-
-            it('It should log a debug message', function() {
-              expect(createLoggerFactory()('debug').debug).to.not.throw();
-            });
-
-            it('It should not log a debug message', function() {
-              expect(createLoggerFactory()().debug).to.not.throw();
-            });
-
-          });
-          
-          describe('#trace', function() {
-
-            it('It should log a trace message', function() {
-              expect(createLoggerFactory()('trace').trace).to.not.throw();
-            });
-
-            it('It should not log a trace message', function() {
-              expect(createLoggerFactory()().trace).to.not.throw();
-            });
-
-          });
-          
-          
-          it('It should contain prefixes in the message', function() {
-            expect(createLoggerFactory()('debug', ['FOO', 'BAR']).debug).to.not.throw();
+          it('Should return itself', function() {
+            expect(logger.info()).to.eql(logger);
           });
 
-          it('It should contain the module name in the message', function() {
-            expect(createLoggerFactory()('debug', undefined, 'FOOBAR').debug).to.not.throw();
+          it('Should log the message', function() {
+
+            logger
+              .setLevel('info')
+              .info('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
           });
 
-          it('It should contain prefixes and the module name in the message', function() {
-            expect(createLoggerFactory()('debug', ['FOO', 'BAR'], 'FOOBAR').debug).to.not.throw();
+          it('Should not log the message', function() {
+
+            logger
+              .setLevel('error')
+              .info('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
           });
-          
+        
+        });
+        
+        describe('#debug', function() {
+
+          it('Should return itself', function() {
+            expect(logger.debug()).to.eql(logger);
+          });
+
+          it('Should log the message', function() {
+
+            logger
+              .setLevel('debug')
+              .debug('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
+          });
+
+          it('Should not log the message', function() {
+
+            logger
+              .setLevel('error')
+              .debug('foobar');
+
+            /**
+             * Implementation specific test logic goes here
+             */
+
+          });
+
         });
 
+        describe('#createInstance', function() {
+
+          it('Should throw because instance name is not provided', function() {
+            expect(logger.createInstance).to.throw(Error, /^Name must be provided$/);
+          });
+
+          it('Should create a new logger instance', function() {
+
+            var instance = logger.createInstance('foobar');
+
+            expect(instance).to.be.an('object').and.to
+              .respondTo('createInstance').and.to
+              .respondTo('setLevel').and.to
+              .respondTo('getLevel').and.to
+              .respondTo('getName').and.to
+              .respondTo('flush').and.to
+              .respondTo('setAutoFlush').and.to
+              .respondTo('error').and.to
+              .respondTo('warning').and.to
+              .respondTo('info').and.to
+              .respondTo('debug');
+
+            expect(instance.getName()).to.equal('foobar');
+
+          });
+
+        });
+        
       });
 
     });
