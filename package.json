@@ -52,6 +52,9 @@
     "update-dependencies": "npm install && npm run check && to-latest --deps --devdeps --nobackup",
     "publish-to-npm": "npm run update-dependencies && npm publish"
   },
+  "peerDependencies": {
+    "record-loadeer": "^1.1.0"
+  },
   "dependencies": {
     "es6-polyfills": "^1.1.0"
   },
