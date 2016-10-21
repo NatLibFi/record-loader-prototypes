@@ -2,27 +2,21 @@
 
 Base prototypes of processors, converters, record store and record set for [recordLoader](https://github.com/NatLibFi/record-loader).
 
-## Processing steps
+## Development 
 
-TODO
+Clone the sources and install the package using `npm`:
 
-## Usage
+```sh
+npm install
+```
 
-### Installation
+Run the following NPM script to lint, test and check coverage of the code:
 
-TODO
+```javascript
 
-### Configuration
+npm run check
 
-TODO
-
-### Running
-
-TODO
-
-## Examples
-
-todo
+```
 
 ## License and copyright
 
