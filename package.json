@@ -1,6 +1,6 @@
 {
   "name": "record-loader-prototypes",
-  "description": "Base prototypes of processors, converters, record store and record set for recordLoader",
+  "description": "Base prototypes of recordLoader modules",
   "author": {
     "name": "The National Library of Finland"
   },
@@ -53,7 +53,7 @@
     "publish-to-npm": "npm run update-dependencies && npm publish"
   },
   "peerDependencies": {
-    "record-loadeer": "^1.1.0"
+    "record-loader": "^1.0.0"
   },
   "dependencies": {
     "es6-polyfills": "^1.1.0"
