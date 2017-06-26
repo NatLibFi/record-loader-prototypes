@@ -85,7 +85,7 @@ function factory(chai, chaiAsPromised, Promise, processorFactory)
 
             it('Should return a Promise which resolves with an object', function() {
               return processor.run().then(function(result) {
-                expect(result).to.be.an('object').and.to.contain.all.keys(['record']); /* jshint -W030 */;
+                expect(result).to.be.an('object').and.to.contain.all.keys(['record']); /* jshint -W030 */
               });
             });
 
