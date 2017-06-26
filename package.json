@@ -49,7 +49,7 @@
     "check": "npm run lint && npm run cover",
     "travisci": "npm run check",
     "generate-requirejs-config": "requirejs-configurator --npm --include-dev-dependencies --exclude-peer-dependencies > test/browser-main.js",
-    "publish-to-npm": "npm run update-dependencies && npm publish"
+    "publish-to-npm": "npm install && npm run check && npm publish"
   },
   "peerDependencies": {
     "record-loader": "^1.0.0"
