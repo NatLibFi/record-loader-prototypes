@@ -1,5 +1,5 @@
 {
-  "name": "record-loader-prototypes",
+  "name": "@natlibfi/record-loader-prototypes",
   "description": "Base prototypes of recordLoader modules",
   "author": {
     "name": "The National Library of Finland"
@@ -39,7 +39,7 @@
     "url": "git@github.com:NatLibFi/record-loader-prototypes.git"
   },
   "license": "AGPL-3.0+",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "lint": "jshint .",
     "test-nodejs": "istanbul cover _mocha -- test/*.spec.js test/**/*.spec.js" ,
@@ -52,10 +52,10 @@
     "publish-to-npm": "npm install && npm run check && npm publish"
   },
   "peerDependencies": {
-    "record-loader": "^1.0.0"
+    "@natlibfi/record-loader": "^1.0.0"
   },
   "dependencies": {
-    "es6-polyfills": "^2.0.0"
+    "@natlibfi/es6-polyfills": "^2.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
