@@ -33,13 +33,13 @@
   if (typeof define === 'function' && define.amd) {
     define([
       'chai/chai',
-      'es6-polyfills/lib/polyfills/promise',
+      '@natlibfi/es6-polyfills/lib/polyfills/promise',
       '../lib/result-formatter/prototype'
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
       require('chai'),
-      require('es6-polyfills/lib/polyfills/promise'),
+      require('@natlibfi/es6-polyfills/lib/polyfills/promise'),
       require('../lib/result-formatter/prototype')
     );
   }
